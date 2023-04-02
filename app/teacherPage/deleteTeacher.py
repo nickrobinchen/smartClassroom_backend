@@ -22,8 +22,10 @@ def delete(user_id,role):
 			msg = "none manager"
 		else:
 			values = request.json
+			print(values)
 			id = values.get('id')
 
+			print(id)
 			if id is None:
 				code = 202
 				msg = 'parameter error'
@@ -45,5 +47,6 @@ def delete(user_id,role):
 		'data':data
 	}
 
+	print(json_to_send)
 	return jsonify(json_to_send)
 

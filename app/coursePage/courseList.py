@@ -38,7 +38,7 @@ def list(user_id,role):
 	json_to_send = {
 		'code':code,
 		'msg':msg,
-		'data':data
+		'result': {"items": courseList}
 	}
 
 	return jsonify(json_to_send)
