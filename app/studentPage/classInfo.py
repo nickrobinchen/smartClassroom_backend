@@ -1,15 +1,15 @@
 from flask import request
 from flask import jsonify
 from app import db
-from app.models import Manager,Klass,Teacher
+from app.models import Manager,Class,Teacher, Grade
 from . import studentPage
 
 from app.auth import tokenUtils
 import time 
 
-@studentPage.route('/student/klassInfo',methods = ['GET'])
+@studentPage.route('/student/classInfo',methods = ['GET'])
 @tokenUtils.token_required
-def klassInfo(user_id,role):
+def classInfo(user_id,role):
 
 	code = 205
 	msg = 'unknown error'
@@ -18,12 +18,14 @@ def klassInfo(user_id,role):
 	if role == 'manager' or role == 'teacher':
 		manager = Manager.query.filter_by(id = user_id).first()
 		teacher = Teacher.query.filter_by(id = user_id).first()
+
+		print(Grade.query.all())
 		if manager is None and teacher is None:
 			code = 201
 			msg = "none manager or teacher"
 		else:
 			options = []
-			collegeList = Klass.query.with_entities(Klass.belonged_college).distinct().all()
+			collegeList = Class.query.with_entities(Class.belonged_college).distinct().all()
 			if collegeList is not None:
 				for item in collegeList:
 					collegeInfo = {}
@@ -33,7 +35,10 @@ def klassInfo(user_id,role):
 
 					gradeInfoList = []
 
-					gradeList = Klass.query.with_entities(Klass.belonged_grade).filter_by(belonged_college = college).distinct().all()
+					# gradeList = Class.query.with_entities(Class.belonged_grade).filter_by(belonged_college = college).distinct().all()
+					# print(gradeList)
+					gradeList = Grade.query.with_entities(Grade.grade_ref, Grade.id).all()
+					print(gradeList)
 					if gradeList is not None:
 						for item in gradeList:
 							gradeInfo = {}
@@ -41,27 +46,28 @@ def klassInfo(user_id,role):
 							gradeInfo['value'] = grade
 							gradeInfo['label'] = grade
 
-							klassList = Klass.query.with_entities(Klass.name).filter_by(belonged_college = college,belonged_grade = grade).all()
-							if klassList is not None:
-								klassInfoList = []
-								for item in klassList:
-									klassInfo = {}
-									klass = item[0]
-									klassInfo['value'] = klass
-									klassInfo['label'] = klass
+							classList = Class.query.with_entities(Class.name).filter_by(belonged_college = college,belonged_grade = item[1]).all()
+							if classList is not None:
+								classInfoList = []
+								for item in classList:
+									classInfo = {}
+									_class= item[0]
+									classInfo['value'] = _class
+									classInfo['label'] = _class
 
-									klassInfoList.append(klassInfo)
+									classInfoList.append(classInfo)
 
-								gradeInfo['children'] = klassInfoList
+								gradeInfo['children'] = classInfoList
 
-							gradeInfoList.append(gradeInfo)
+							if len(gradeInfo['children']):
+								gradeInfoList.append(gradeInfo)
 
 						collegeInfo['children'] = gradeInfoList
 
 					options.append(collegeInfo)		
 
 
-			data = {'klassInfo':options}
+			data = {'classInfo':options}
 			code = 200
 			msg = "success"
 	else:
@@ -71,7 +77,7 @@ def klassInfo(user_id,role):
 	json_to_send = {
 		'code':code,
 		'msg':msg,
-		'data':data
+		'result':options
 	}
 
 	return jsonify(json_to_send)
@@ -93,7 +99,7 @@ def collegeInfo(user_id,role):
 			msg = "none manager or teacher"
 		else:
 			options = []
-			collegeList = Klass.query.with_entities(Klass.belonged_college).distinct().all()
+			collegeList = Class.query.with_entities(Class.belonged_college).distinct().all()
 			if collegeList is not None:
 				for item in collegeList:
 					collegeInfo = {}

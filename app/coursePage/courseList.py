@@ -1,7 +1,7 @@
 from flask import request
 from flask import jsonify
 from app import db
-from app.models import Manager,Teacher,CourseForTeacher,Klass,Course,Student
+from app.models import Manager,Teacher,CourseForTeacher,Class,Course,Student
 from . import coursePage
 
 from app.auth import tokenUtils
@@ -105,7 +105,7 @@ def courseforteacherlist(user_id,role):
 				index = index + 1
 				aCourse['index'] = index
 				aCourse['id'] = course.id
-				klass = Klass.query.filter_by(id=course.klass_id).first()
+				klass = Klass.query.filter_by(id=course.class_id).first()
 				if klass is not None:
 					aCourse['klass'] = klass.name
 				_course = Course.query.filter_by(id=course.course_id).first()
@@ -152,7 +152,7 @@ def courseforstudentlist(user_id,role):
 			values = request.json
 			status = values.get('status') or 1
 
-			courseForTeacherListDB = CourseForTeacher.query.filter_by(klass_id=student.klass_id,status=status).all()
+			courseForTeacherListDB = CourseForTeacher.query.filter_by(klass_id=student.class_id, status=status).all()
 			courseList = []
 			index = 0
 			for course in courseForTeacherListDB:

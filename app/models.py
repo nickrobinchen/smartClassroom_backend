@@ -1,7 +1,21 @@
 from app import db
 from sqlalchemy import ForeignKey
 
+class Grade(db.Model):
 
+    # 定义表名
+    __tablename__ = 'grade'
+
+    id = db.Column(db.INTEGER, primary_key = True, autoincrement = True, nullable = False)
+    grade_name = db.Column(db.String(45), nullable = True)
+    grade_ref = db.Column(db.String(45), nullable = True)
+
+    def __init__(self, grade_name, grade_ref):
+        self.grade_name = grade_name
+        self.grade_ref = grade_ref
+
+    def __repr__(self):
+        return self.grade_ref + self.grade_name
 class Manager(db.Model):
 
     # 定义表名
@@ -53,15 +67,15 @@ class Student(db.Model):
     account = db.Column(db.String(45))
     tel = db.Column(db.String(45))
     email = db.Column(db.String(45))
-    klass_id = db.Column(db.INTEGER)
+    class_id = db.Column(db.INTEGER)
     password = db.Column(db.String(45))
 
 
-    def __init__(self,name,account,tel,klass_id,email,password):
+    def __init__(self, name, account, tel, class_id, email, password):
         self.name = name
         self.account = account
         self.tel = tel
-        self.klass_id = klass_id
+        self.class_id = class_id
         self.email = email
         self.password = password
 
@@ -92,17 +106,17 @@ class CourseForTeacher(db.Model):
     id = db.Column(db.INTEGER, primary_key=True)
     course_id = db.Column(db.INTEGER)
     teacher_id = db.Column(db.INTEGER)
-    klass_id = db.Column(db.INTEGER)
+    class_id = db.Column(db.INTEGER)
     start_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
     week_date = db.Column(db.String(45))
     status = db.Column(db.INTEGER)
 
-    def __init__(self, course_id, teacher_id,klass_id,start_date,end_date,week_date,status):
+    def __init__(self, course_id, teacher_id,class_id,start_date,end_date,week_date,status):
 
         self.course_id = course_id
         self.teacher_id = teacher_id
-        self.klass_id = klass_id
+        self.class_id = class_id
         self.start_date = start_date
         self.end_date = end_date
         self.week_date = week_date
@@ -130,10 +144,10 @@ class Lesson(db.Model):
     def __repr__(self):
         return '<student {}>'.format(self.id)
 
-class Klass(db.Model):
+class Class(db.Model):
 
     # 定义表名
-    __tablename__ = 'klass'
+    __tablename__ = 'class'
 
     id = db.Column(db.INTEGER, primary_key=True)
     name = db.Column(db.String(45))
@@ -146,7 +160,7 @@ class Klass(db.Model):
         self.belonged_college = belonged_college
 
     def __repr__(self):
-        return '<klass {}>'.format(self.name)
+        return '<class {}>'.format(self.name)
 
 class College(db.Model):
 

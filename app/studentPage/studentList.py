@@ -1,7 +1,7 @@
 from flask import request
 from flask import jsonify
 from app import db
-from app.models import Student,Manager,Klass,Teacher
+from app.models import Student,Manager,Class,Teacher,Grade
 from . import studentPage
 
 from app.auth import tokenUtils
@@ -23,14 +23,36 @@ def studentList(user_id,role):
 			msg = "none manager or teacher"
 		else:
 			values = request.json
-			college = values.get("college")
-			grade = values.get("grade")
-			klass = values.get("klass")
+			print(values)
+			if values != {}:
+				college = values.get("college")
+				grade = values.get("grade")
+				klass = values.get("class")
+				klass = Class.query.filter_by(belonged_college=college,belonged_grade=Grade.query.filter_by(grade_ref=grade).first().id,name=klass).first()
+				print(klass)
+				if klass is not None:
+					klass_id = klass.id
+					studentListDB = Student.query.filter_by(class_id=klass_id).all();
+					studentList = []
+					index = 0
+					for student in studentListDB:
+						aStudent = {}
+						index = index + 1
+						aStudent['index'] = index
+						aStudent['id'] = student.id
+						aStudent['name'] = student.name
+						aStudent['account'] = student.account
+						aStudent['klass_id'] = student.class_id
+						aStudent['email'] = student.email
+						aStudent['tel'] = student.tel
 
-			klass = Klass.query.filter_by(belonged_college=college,belonged_grade=grade,name=klass).first()
-			if klass is not None:
-				klass_id = klass.id			
-				studentListDB = Student.query.filter_by(klass_id=klass_id).all();
+						studentList.append(aStudent)
+					data = studentList#{'studentList':studentList}
+					code = 200
+					msg = "success"
+
+			else:
+				studentListDB = Student.query.all();
 				studentList = []
 				index = 0
 				for student in studentListDB:
@@ -40,14 +62,15 @@ def studentList(user_id,role):
 					aStudent['id'] = student.id
 					aStudent['name'] = student.name
 					aStudent['account'] = student.account
-					aStudent['klass_id'] = student.klass_id
+					aStudent['klass_id'] = student.class_id
 					aStudent['email'] = student.email
 					aStudent['tel'] = student.tel
 
 					studentList.append(aStudent)
-				data = {'studentList':studentList}
+				data = studentList  # {'studentList':studentList}
 				code = 200
 				msg = "success"
+
 	else:
 		code = 202
 		msg = 'access deny!'
@@ -55,8 +78,7 @@ def studentList(user_id,role):
 	json_to_send = {
 		'code':code,
 		'msg':msg,
-		'data':data
+		'result':data
 	}
-
 	return jsonify(json_to_send)
 

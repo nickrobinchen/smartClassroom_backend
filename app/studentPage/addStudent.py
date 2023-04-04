@@ -1,7 +1,7 @@
 from flask import request
 from flask import jsonify
 from app import db
-from app.models import Manager,Student,Klass,Teacher
+from app.models import Manager,Student,Class,Teacher
 from . import studentPage
 
 from app.auth import tokenUtils
