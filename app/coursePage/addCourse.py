@@ -1,7 +1,7 @@
 from flask import request
 from flask import jsonify
 from app import db
-from app.models import Course, Manager, Teacher, CourseForTeacher, Class, Lesson, Record, Student
+from app.models import Course, Manager, Teacher, Lecture, Class, Lesson, Record, Student
 from . import coursePage
 
 from app.auth import tokenUtils
@@ -50,7 +50,8 @@ def add(user_id, role):
 
 @coursePage.route('/lecture/add', methods=['POST'])
 @tokenUtils.token_required
-def addcourseforteacher(yuser_id, yrole):
+# todo: 恢复这里的权限处理
+def addcourseforteacher(user_id, role):
     role = 'teacher'
     user_id = 1
     teacher_id = user_id
@@ -65,23 +66,23 @@ def addcourseforteacher(yuser_id, yrole):
             msg = "none teacher"
         else:
             values = request.json
-            klass_info = values.get('class')
+            print(values)
+            class_name = values.get('class')
             course_id = values.get('course')
             weekDate = values.get('weekDate')
             startAndEndDate = values.get('startAndEndDate')
 
-            if klass_info is None or course_id is None or weekDate is None \
+            if class_name is None or course_id is None or weekDate is None \
                     or startAndEndDate is None:
 
                 code = 202
+
                 msg = 'parameter error'
             else:
                 try:
-                    college = klass_info[0]
-                    grade = klass_info[1]
-                    name = klass_info[2]
 
-                    aKlass = Class.query.filter_by(belonged_college=college, belonged_grade=grade, name=name).first()
+                    aKlass = Class.query.filter_by(name=class_name).first()
+                    print(aKlass.id)
                     klass_id = aKlass.id
 
                     start_date = startAndEndDate[0]
@@ -90,16 +91,22 @@ def addcourseforteacher(yuser_id, yrole):
                     week_date = "、".join(weekDate)
 
                     status = 1
-                    courseforteacher = CourseForTeacher(course_id, teacher_id, klass_id, start_date, end_date,
-                                                        week_date, status)
-                    db.session.add(courseforteacher)
-                    db.session.commit()
-                    if courseforteacher.id is not None:
-                        addLessons(courseforteacher.id, start_date, end_date, weekDate, klass_id)
-                    data = {"id": courseforteacher.id}
-                    code = 200
-                    msg = 'add course for teacher success'
-                except:
+                    courseforteacher = Lecture(course_id, teacher_id, klass_id, start_date, end_date,
+                                               week_date, status)
+                    if Lecture.query.filter_by(course_id=course_id, teacher_id=teacher_id, class_id=klass_id).first() is not None:
+                        msg = 'Lecture already exists!'
+                    else:
+                        db.session.add(courseforteacher)
+                        db.session.commit()
+                        if courseforteacher.id is not None:
+                            pass
+                            # todo: What is this?
+                            # addLessons(courseforteacher.id, start_date, end_date, weekDate, klass_id)
+                        data = {"id": courseforteacher.id}
+                        code = 200
+                        msg = 'add course for teacher success'
+                except Exception as e:
+                    print(e)
                     pass
     else:
         code = 201
@@ -108,9 +115,9 @@ def addcourseforteacher(yuser_id, yrole):
     json_to_send = {
         'code': code,
         'msg': msg,
-        'data': data
+        'result': data
     }
-
+    print(json_to_send)
     return jsonify(json_to_send)
 
 

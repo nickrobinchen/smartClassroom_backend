@@ -1,7 +1,7 @@
 from flask import request
 from flask import jsonify
 from app import db
-from app.models import Manager,Teacher,CourseForTeacher,Class,Course,Student
+from app.models import Manager,Teacher,Lecture,Class,Course,Student
 from . import coursePage
 
 from app.auth import tokenUtils
@@ -79,11 +79,13 @@ def options(user_id,role):
 
 
 
-@coursePage.route('/courseforteacher/list',methods = ['POST'])
+@coursePage.route('/lecture/list',methods = ['POST'])
 @tokenUtils.token_required
 def courseforteacherlist(user_id,role):
 
-	teacher_id = user_id
+	teacher_id = 1
+	user_id = 1
+	role = 'teacher'
 	code = 205
 	msg = 'unknown error'
 	data = {}
@@ -97,7 +99,8 @@ def courseforteacherlist(user_id,role):
 			values = request.json
 			status = values.get('status') or 1
 
-			courseForTeacherListDB = CourseForTeacher.query.filter_by(teacher_id=teacher_id,status=status).all()
+			courseForTeacherListDB = Lecture.query.filter_by(teacher_id=teacher_id,status=status).all()
+			print(courseForTeacherListDB)
 			courseList = []
 			index = 0
 			for course in courseForTeacherListDB:
@@ -105,7 +108,7 @@ def courseforteacherlist(user_id,role):
 				index = index + 1
 				aCourse['index'] = index
 				aCourse['id'] = course.id
-				klass = Klass.query.filter_by(id=course.class_id).first()
+				klass = Class.query.filter_by(id=course.class_id).first()
 				if klass is not None:
 					aCourse['klass'] = klass.name
 				_course = Course.query.filter_by(id=course.course_id).first()
@@ -119,17 +122,17 @@ def courseforteacherlist(user_id,role):
 
 				courseList.append(aCourse)
 
-			data = {"courseList": courseList}
+			data = courseList#{"courseList": courseList}
 			code = 200
 			msg = "course get success"
-			
 
 	json_to_send = {
 		'code':code,
 		'msg':msg,
-		'data':data
+		'result':data
 	}
 
+	print(json_to_send)
 	return jsonify(json_to_send)
 
 
@@ -152,7 +155,7 @@ def courseforstudentlist(user_id,role):
 			values = request.json
 			status = values.get('status') or 1
 
-			courseForTeacherListDB = CourseForTeacher.query.filter_by(klass_id=student.class_id, status=status).all()
+			courseForTeacherListDB = Lecture.query.filter_by(klass_id=student.class_id, status=status).all()
 			courseList = []
 			index = 0
 			for course in courseForTeacherListDB:

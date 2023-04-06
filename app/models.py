@@ -98,10 +98,10 @@ class Course(db.Model):
     def __repr__(self):
         return '<Course {}>'.format(self.name)
 
-class CourseForTeacher(db.Model):
+class Lecture(db.Model):
 
     # 定义表名
-    __tablename__ = 'courseforteacher'
+    __tablename__ = 'lecture'
 
     id = db.Column(db.INTEGER, primary_key=True)
     course_id = db.Column(db.INTEGER)
