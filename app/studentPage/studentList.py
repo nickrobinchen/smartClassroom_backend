@@ -26,13 +26,15 @@ def studentList(user_id,role):
 			print(values)
 			if values != {}:
 				college = values.get("college")
-				grade = values.get("grade")
-				klass = values.get("class")
-				klass = Class.query.filter_by(belonged_college=college,belonged_grade=Grade.query.filter_by(grade_ref=grade).first().id,name=klass).first()
-				print(klass)
+				id = values.get("class_id")
+				name = values.get("class")
+				if id is not None:
+					klass = Class.query.filter_by(id=id).first()
+				else:
+					klass = Class.query.filter_by(name=name).first()
 				if klass is not None:
-					klass_id = klass.id
-					studentListDB = Student.query.filter_by(class_id=klass_id).all();
+					id = klass.id
+					studentListDB = Student.query.filter_by(class_id=id).all();
 					studentList = []
 					index = 0
 					for student in studentListDB:
@@ -74,7 +76,7 @@ def studentList(user_id,role):
 	else:
 		code = 202
 		msg = 'access deny!'
-
+	print(data)
 	json_to_send = {
 		'code':code,
 		'msg':msg,

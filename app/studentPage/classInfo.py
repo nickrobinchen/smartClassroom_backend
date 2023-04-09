@@ -46,14 +46,14 @@ def classInfo(user_id,role):
 							gradeInfo['value'] = grade
 							gradeInfo['label'] = grade
 
-							classList = Class.query.with_entities(Class.name).filter_by(belonged_college = college,belonged_grade = item[1]).all()
+							classList = Class.query.with_entities(Class.name, Class.id).filter_by(belonged_college = college,belonged_grade = item[1]).all()
 							if classList is not None:
+								#print(classList)
 								classInfoList = []
 								for item in classList:
 									classInfo = {}
-									_class= item[0]
-									classInfo['value'] = _class
-									classInfo['label'] = _class
+									classInfo['value'] = item[1]
+									classInfo['label'] = item[0]
 
 									classInfoList.append(classInfo)
 

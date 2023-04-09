@@ -98,6 +98,35 @@ class Course(db.Model):
     def __repr__(self):
         return '<Course {}>'.format(self.name)
 
+class SignInRecord(db.Model):
+
+    # 定义表名
+    __tablename__ = 'signin_records'
+
+    id = db.Column(db.INTEGER, primary_key=True)
+    signin_id = db.Column(db.INTEGER)
+    student_id = db.Column(db.INTEGER)
+    signin_time = db.Column(db.BIGINT)
+    extra_info = db.Column(db.INTEGER)
+
+    def __init__(self, signin_id, student_id, signin_time,extra_info=0):
+        self.signin_id = signin_id
+        self.student_id = student_id
+        self.signin_time = signin_time
+        if extra_info:
+            self.extra_info = extra_info
+class SignIn(db.Model):
+
+    # 定义表名
+    __tablename__ = 'signin'
+
+    id = db.Column(db.INTEGER, primary_key=True)
+    lecture_id = db.Column(db.INTEGER)
+    end_time = db.Column(db.BIGINT)
+
+    def __init__(self, lec_id, end_time):
+        self.lecture_id = lec_id
+        self.end_time = end_time
 class Lecture(db.Model):
 
     # 定义表名
@@ -126,23 +155,23 @@ class Lecture(db.Model):
     def __repr__(self):
         return '<CourseForTeacher {}>'.format(self.id)
 
-class Lesson(db.Model):
-
-    # 定义表名
-    __tablename__ = 'lesson'
-
-    id = db.Column(db.INTEGER, primary_key=True)
-    courseforteacher_id = db.Column(db.INTEGER)
-    date = db.Column(db.Date)
-    week_date = db.Column(db.String(45))
-
-    def __init__(self,courseforteacher_id,date,week_date):
-        self.courseforteacher_id = courseforteacher_id
-        self.date = date
-        self.week_date = week_date
-
-    def __repr__(self):
-        return '<student {}>'.format(self.id)
+# class Lesson(db.Model):
+#
+#     # 定义表名
+#     __tablename__ = 'lesson'
+#
+#     id = db.Column(db.INTEGER, primary_key=True)
+#     courseforteacher_id = db.Column(db.INTEGER)
+#     date = db.Column(db.Date)
+#     week_date = db.Column(db.String(45))
+#
+#     def __init__(self,courseforteacher_id,date,week_date):
+#         self.courseforteacher_id = courseforteacher_id
+#         self.date = date
+#         self.week_date = week_date
+#
+#     def __repr__(self):
+#         return '<student {}>'.format(self.id)
 
 class Class(db.Model):
 
@@ -259,28 +288,22 @@ class Note(db.Model):
     def __repr__(self):
         return '<note {}>'.format(self.name)
 
-class SignIn(db.Model):
+
+
+class Lesson(db.Model):
 
     # 定义表名
-    __tablename__ = 'signin'
+    __tablename__ = 'lesson'
 
     id = db.Column(db.INTEGER, primary_key=True)
+    lecture_id = db.Column(db.INT)
+    student_id = db.Column(db.INT)
+    score = db.Column(db.INT)
 
-    def __init__(self):
-        pass
+    def __init__(self,lecture_id,student_id):
 
-    def __repr__(self):
-        return '<student {}>'.format(self.id)
-
-class Score(db.Model):
-
-    # 定义表名
-    __tablename__ = 'score'
-
-    id = db.Column(db.INTEGER, primary_key=True)
-
-    def __init__(self):
-        pass
+        self.lecture_id = lecture_id
+        self.student_id = student_id
 
     def __repr__(self):
-        return '<student {}>'.format(self.id)
+        return '<lesson {}>'.format(self.id)

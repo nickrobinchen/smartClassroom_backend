@@ -67,12 +67,12 @@ def addcourseforteacher(user_id, role):
         else:
             values = request.json
             print(values)
-            class_name = values.get('class')
+            class_id = values.get('class')
             course_id = values.get('course')
             weekDate = values.get('weekDate')
             startAndEndDate = values.get('startAndEndDate')
 
-            if class_name is None or course_id is None or weekDate is None \
+            if class_id is None or course_id is None or weekDate is None \
                     or startAndEndDate is None:
 
                 code = 202
@@ -81,25 +81,27 @@ def addcourseforteacher(user_id, role):
             else:
                 try:
 
-                    aKlass = Class.query.filter_by(name=class_name).first()
-                    print(aKlass.id)
-                    klass_id = aKlass.id
-
                     start_date = startAndEndDate[0]
                     end_date = startAndEndDate[1]
 
                     week_date = "、".join(weekDate)
 
                     status = 1
-                    courseforteacher = Lecture(course_id, teacher_id, klass_id, start_date, end_date,
+                    courseforteacher = Lecture(course_id, teacher_id, class_id, start_date, end_date,
                                                week_date, status)
-                    if Lecture.query.filter_by(course_id=course_id, teacher_id=teacher_id, class_id=klass_id).first() is not None:
+                    print(courseforteacher)
+                    if Lecture.query.filter_by(course_id=course_id, teacher_id=teacher_id, class_id=class_id).first() is not None:
                         msg = 'Lecture already exists!'
                     else:
                         db.session.add(courseforteacher)
                         db.session.commit()
+
                         if courseforteacher.id is not None:
-                            pass
+                            students = Student.query.with_entities(Student.id).filter_by(class_id=class_id).all()
+                            lessons = []
+                            for s in students:
+                                db.session.add(Lesson(lecture_id=courseforteacher.id,student_id=s[0]))
+                            db.session.commit()
                             # todo: What is this?
                             # addLessons(courseforteacher.id, start_date, end_date, weekDate, klass_id)
                         data = {"id": courseforteacher.id}
