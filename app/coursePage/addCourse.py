@@ -15,7 +15,7 @@ def add(user_id, role):
     msg = 'unknown error'
     data = {}
 
-    if role == 'manager':
+    if role == 'manager' or role == 'admin':
         manager = Manager.query.filter_by(id=user_id).first()
         if manager is None:
             code = 201
@@ -38,13 +38,12 @@ def add(user_id, role):
     else:
         code = 201
         msg = 'access deny'
-
     json_to_send = {
         'code': code,
         'msg': msg,
-        'data': data
+        'result': data
     }
-
+    print(json_to_send)
     return jsonify(json_to_send)
 
 

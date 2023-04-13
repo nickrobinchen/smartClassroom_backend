@@ -44,7 +44,8 @@ def token_required(func):
 		kwargs['user_id'] = 1
 		kwargs['role'] = 'manager'
 
-		return func(*args,**kwargs)
+		#return func(*args,**kwargs)
+
 		token = request.headers.get('Authorization')
 		if token is None:
 			return jsonify(none_token)

@@ -13,8 +13,8 @@ def list(user_id,role):
 	code = 205
 	msg = 'unknown error'
 	data = {}
-
-	if role == 'manager':
+	print(user_id,role)
+	if role == 'manager' or role == 'admin':
 		manager = Manager.query.filter_by(id = user_id).first()
 		if manager is None:
 			code = 201
@@ -82,10 +82,6 @@ def options(user_id,role):
 @coursePage.route('/lecture/list',methods = ['POST'])
 @tokenUtils.token_required
 def courseforteacherlist(user_id,role):
-
-	teacher_id = 1
-	user_id = 1
-	role = 'teacher'
 	code = 205
 	msg = 'unknown error'
 	data = {}
@@ -99,8 +95,7 @@ def courseforteacherlist(user_id,role):
 			values = request.json
 			status = values.get('status') or 1
 
-			courseForTeacherListDB = Lecture.query.filter_by(teacher_id=teacher_id,status=status).all()
-			print(courseForTeacherListDB)
+			courseForTeacherListDB = Lecture.query.filter_by(teacher_id=user_id,status=status).all()
 			courseList = []
 			index = 0
 			for course in courseForTeacherListDB:

@@ -15,35 +15,26 @@ def teacherList(user_id,role):
 	msg = 'unknown error'
 	data = {}
 
-	if role == 'manager':
-		manager = Manager.query.filter_by(id = user_id).first()
-		if manager is None:
-			code = 201
-			msg = "none manager"
-		else:
-			teacherListDB = Teacher.query.all();
-			teacherList = []
-			index = 0
-			for teacher in teacherListDB:
-				index = index + 1
-				aTeacher = {}
-				aTeacher['index'] = index
-				aTeacher['id'] = teacher.id
-				aTeacher['name'] = teacher.name
-				aTeacher['account'] = teacher.account
-				aTeacher['address'] = teacher.address
-				aTeacher['email'] = teacher.email
-				aTeacher['tel'] = teacher.tel
+	teacherListDB = Teacher.query.all();
+	teacherList = []
+	index = 0
+	for teacher in teacherListDB:
+		index = index + 1
+		aTeacher = {}
+		aTeacher['index'] = index
+		aTeacher['id'] = teacher.id
+		aTeacher['name'] = teacher.name
+		aTeacher['account'] = teacher.account
+		aTeacher['address'] = teacher.address
+		aTeacher['email'] = teacher.email
+		aTeacher['tel'] = teacher.tel
 
-				teacherList.append(aTeacher)
+		teacherList.append(aTeacher)
 
-			data = {'items':teacherList}
-			code = 200
-			msg = "success"
-			
-	else:
-		code = 202
-		msg = 'access deny'
+	data = {'items':teacherList}
+	code = 200
+	msg = "success"
+
 
 	json_to_send = {
 		'code':code,

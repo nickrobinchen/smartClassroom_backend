@@ -123,10 +123,14 @@ class SignIn(db.Model):
     id = db.Column(db.INTEGER, primary_key=True)
     lecture_id = db.Column(db.INTEGER)
     end_time = db.Column(db.BIGINT)
+    start_time = db.Column(db.BIGINT)
+    ended = db.Column(db.BOOLEAN)
 
-    def __init__(self, lec_id, end_time):
+    def __init__(self, lec_id, end_time, start_time):
         self.lecture_id = lec_id
         self.end_time = end_time
+        self.start_time = start_time
+        self.ended = False
 class Lecture(db.Model):
 
     # 定义表名

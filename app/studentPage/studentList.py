@@ -14,8 +14,7 @@ def studentList(user_id,role):
 	code = 205
 	msg = 'unknown error'
 	data = {}
-	print((role,user_id))
-	if role == 'manager' or role == 'teacher':
+	if role == 'manager' or role == 'teacher' or role == 'admin':
 		manager = Manager.query.filter_by(id = user_id).first()
 		teacher = Teacher.query.filter_by(id = user_id).first()
 		if manager is None and teacher is None:
@@ -76,7 +75,6 @@ def studentList(user_id,role):
 	else:
 		code = 202
 		msg = 'access deny!'
-	print(data)
 	json_to_send = {
 		'code':code,
 		'msg':msg,

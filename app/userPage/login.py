@@ -21,7 +21,7 @@ def login():
 	values = request.json
 	account = values.get('account')
 	password = values.get('password')
-
+	print(values)
 	if account is None or password is None:
 		code = 201
 		msg = 'there is no account or password!'
@@ -31,7 +31,7 @@ def login():
 		user = None
 		if first == "M":
 			user = Manager.query.filter_by(account = account).first()
-			role = "manager"
+			role = "admin"
 		elif first == "U":
 			user = Student.query.filter_by(account = account).first()
 			role = "student"
@@ -49,15 +49,16 @@ def login():
 			else:
 				code = 200
 				data = {
-						'identity':role,
+						'roles':[role],
 						'token':tokenUtils.gen_token(user,role).decode('ascii'),
 						'expire_time':int(round(time.time()*1000+60*60*24*1000))
 					}
 	json_to_send = {
 		'code':code,
 		'msg':msg,
-		'data':data
+		'result':data
 	}
+	print(json_to_send)
 	return jsonify(json_to_send)
 
 @userPage.route('/modifyPassword',methods=['POST'])

@@ -15,7 +15,7 @@ def classInfo(user_id,role):
 	msg = 'unknown error'
 	data = {}
 
-	if role == 'manager' or role == 'teacher':
+	if role == 'manager' or role == 'teacher' or role == 'admin':
 		manager = Manager.query.filter_by(id = user_id).first()
 		teacher = Teacher.query.filter_by(id = user_id).first()
 
