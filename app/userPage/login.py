@@ -31,7 +31,7 @@ def login():
 		user = None
 		if first == "M":
 			user = Manager.query.filter_by(account = account).first()
-			role = "admin"
+			role = "manager"
 		elif first == "U":
 			user = Student.query.filter_by(account = account).first()
 			role = "student"
@@ -57,6 +57,31 @@ def login():
 		'code':code,
 		'msg':msg,
 		'result':data
+	}
+	print(json_to_send)
+	return jsonify(json_to_send)
+
+
+@userPage.route('/user/getInfo',methods = ['GET'])
+@tokenUtils.token_required
+def getUserInfo(user_id, role):
+	code = 205
+	msg = 'success'
+	data = {}
+	user = None
+	print((user_id, role))
+	if role == "manager" or role == "admin":
+		user = Manager.query.filter_by(id=user_id).first()
+	elif role == "teacher":
+		user = Student.query.filter_by(id=user_id).first()
+	elif role == "student":
+		user = Teacher.query.filter_by(id=user_id).first()
+	code = 200
+	data = dict(roles=[dict(roleName=role,value=role)],userId=user_id,username=user.name,realName=user.name,avatar='')
+	json_to_send = {
+		'code':code,
+		'msg':msg,
+		'result': data
 	}
 	print(json_to_send)
 	return jsonify(json_to_send)

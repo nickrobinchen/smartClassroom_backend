@@ -9,12 +9,12 @@ import time
 
 @coursePage.route('/course/list',methods = ['GET'])
 @tokenUtils.token_required
-def list(user_id,role):
+def courseList(user_id,role):
 	code = 205
 	msg = 'unknown error'
 	data = {}
 	print(user_id,role)
-	if role == 'manager' or role == 'admin':
+	if role == 'manager' or role == 'admin' or role == 'teacher':
 		manager = Manager.query.filter_by(id = user_id).first()
 		if manager is None:
 			code = 201
@@ -112,7 +112,12 @@ def courseforteacherlist(user_id,role):
 				start_date_str = course.start_date.strftime('%Y-%m-%d')
 				end_date_str = course.end_date.strftime('%Y-%m-%d')
 				aCourse['startAndEndDate'] = start_date_str + " 至 " + end_date_str
-				aCourse['week_date'] = course.week_date
+
+				weekDay = course.week_date.split("、")
+				week = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日']
+
+				aCourse['weekDay'] = '、'.join(list(map(lambda i: week[int(i) - 1], weekDay)))
+				aCourse['weekday_array'] = list(map(lambda i:int(i) % 7,course.week_date.split("、")))
 
 
 				courseList.append(aCourse)
