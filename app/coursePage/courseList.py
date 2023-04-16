@@ -14,26 +14,23 @@ def courseList(user_id,role):
 	msg = 'unknown error'
 	data = {}
 	print(user_id,role)
+	courseList = []
+
 	if role == 'manager' or role == 'admin' or role == 'teacher':
-		manager = Manager.query.filter_by(id = user_id).first()
-		if manager is None:
-			code = 201
-			msg = "none manager"
-		else:
-			courseListDB = Course.query.all();
-			courseList = []
-			index = 0
-			for course in courseListDB:
-				aCourse = {}
-				index = index + 1
-				aCourse['index'] = index
-				aCourse['id'] = course.id
-				aCourse['name'] = course.name
-				aCourse['grade'] = course.grade
-				courseList.append(aCourse)
-			data = {'courseList':courseList}
-			code = 200
-			msg = "success"
+		courseListDB = Course.query.all()
+		index = 0
+		print(courseListDB)
+		for course in courseListDB:
+			aCourse = {}
+			index = index + 1
+			aCourse['index'] = index
+			aCourse['id'] = course.id
+			aCourse['name'] = course.name
+			aCourse['grade'] = course.grade
+			courseList.append(aCourse)
+		data = {'courseList':courseList}
+		code = 200
+		msg = "success"
 
 	json_to_send = {
 		'code':code,

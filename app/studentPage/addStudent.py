@@ -26,22 +26,22 @@ def addStudent(user_id,role):
 			account = values.get('account')
 			tel = values.get('tel')
 			email = values.get('email')
-			college = values.get('college')
-			grade = values.get('grade')
-			klass_name = values.get('klass')
-
+			# college = values.get('college')
+			# grade = values.get('grade')
+			# klass_name = values.get('klass')
+			class_id = values.get('student_class')
 			if name is None or account is None:
 				code = 202
 				msg = 'parameter error'
 			else:
 				try:
-					klass = Klass.query.filter_by(name=klass_name,belonged_grade=grade,belonged_college=college).first()
-					if klass is not None:			
-						klass_id = klass.id
-						password = account[-6:]
-						student = Student(name,account,tel,klass_id,email,password)
-						db.session.add(student) 
-						db.session.commit()
+					# klass = Class.query.filter_by(n).first()
+					# if klass is not None:
+					# 	klass_id = klass.id
+					password = 'student'#account[-6:]
+					student = Student(name,account,tel,class_id,email,password)
+					db.session.add(student)
+					db.session.commit()
 
 					code = 200
 					msg = 'success'

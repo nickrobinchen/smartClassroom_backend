@@ -49,10 +49,7 @@ def add(user_id, role):
 
 @coursePage.route('/lecture/add', methods=['POST'])
 @tokenUtils.token_required
-# todo: 恢复这里的权限处理
 def addcourseforteacher(user_id, role):
-    role = 'teacher'
-    user_id = 1
     teacher_id = user_id
     code = 205
     msg = 'unknown error'

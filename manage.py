@@ -4,8 +4,11 @@ from app import create_app,db
 from app.models import Manager
 #from flask_script import Manager, Shell,Server
 #from flask_migrate import Migrate, MigrateCommand
+from flask_cors import CORS, cross_origin
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+
+cors = CORS(app)
 # manager = Manager(app)
 # migrate = Migrate(app, db)
 #

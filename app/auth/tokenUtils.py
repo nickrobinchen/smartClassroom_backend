@@ -57,6 +57,9 @@ def token_required(func):
 			#except SignatureExpired:
 			#	return jsonify(expired_token)
 			except JoseError:
+				# kwargs['user_id'] = 1
+				# kwargs['role'] = 'manager'
+				# return func(*args, **kwargs)
 				return jsonify(bad_token)
 			kwargs['user_id'] = data['id']
 			kwargs['role'] = data['role']

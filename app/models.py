@@ -24,9 +24,11 @@ class Manager(db.Model):
     id = db.Column(db.INTEGER, primary_key = True, autoincrement = True, nullable = False)
     account = db.Column(db.String(45), nullable = True)
     password = db.Column(db.String(45), nullable = False)
+    name = db.Column(db.String(45))
 
-    def __init__(self, account, password):
+    def __init__(self, account, password, name):
         self.account = account
+        self.name = name
         self.password = password
 
     def __repr__(self):
