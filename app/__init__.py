@@ -23,6 +23,8 @@ def create_app(config_name):
 
     from app.userPage import userPage
     app.register_blueprint(userPage)
+    from app.managerPage import managerPage
+    app.register_blueprint(managerPage)
 
 
     from app.coursePage import coursePage

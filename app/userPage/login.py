@@ -75,6 +75,7 @@ def getUserInfo(user_id, role):
     homePath = '/dashboard/workbench'
     if role == "manager" or role == "admin":
         user = Manager.query.filter_by(id=user_id).first()
+        homePath = '/adminmanage/homePage'
     elif role == "student":
         user = Student.query.filter_by(id=user_id).first()
         homePath = '/studentpanel/personal_info'

@@ -33,7 +33,7 @@ def addTeacher(user_id,role):
 				msg = 'parameter error'
 			else:
 				try:
-					password = account[-6:]
+					password = 'teacher'#account[-6:]
 					teacher = Teacher(name,account,tel,address,email,password)
 					db.session.add(teacher) 
 					db.session.commit()

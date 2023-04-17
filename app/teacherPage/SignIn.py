@@ -20,6 +20,8 @@ def simulate_signin(app, id, lec_id):
         index = random.sample(students, int(stu_num / 1.5))
         print(index)
         for i in index:
+            if i == 2:
+                continue
             sim_signin = SignInRecord(signin_id=id,student_id=i,signin_time=int(time.time()*1000))
             print(sim_signin)
             db.session.add(sim_signin)
