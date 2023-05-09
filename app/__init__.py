@@ -21,26 +21,30 @@ def create_app(config_name):
     from app.utils import utils
     app.register_blueprint(utils)
 
-    from app.userPage import userPage
+    from app.userApi import userPage
     app.register_blueprint(userPage)
-    from app.managerPage import managerPage
+    from app.managerApi import managerPage
     app.register_blueprint(managerPage)
+
+    from app.superApi import superApi
+    app.register_blueprint(superApi)
+
 
 
     from app.coursePage import coursePage
     app.register_blueprint(coursePage)
 
-    from app.teacherPage import teacherPage
+    from app.teacherApi import teacherPage
     app.register_blueprint(teacherPage)
 
 
     from app.labPage import labPage
     app.register_blueprint(labPage)
 
-    from app.studentPage import studentPage
+    from app.studentApi import studentPage
     app.register_blueprint(studentPage)
 
-    from app.lessonPage import lessonPage
+    from app.lessonApi import lessonPage
     app.register_blueprint(lessonPage)
 
 

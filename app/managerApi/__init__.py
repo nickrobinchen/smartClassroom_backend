@@ -1,5 +1,5 @@
 from flask import Blueprint
 
-managerPage = Blueprint('managerPage', __name__)
+managerPage = Blueprint('managerApi', __name__)
 
 from . import managerInfo

@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-teacherPage = Blueprint('teacherPage', __name__)
+teacherPage = Blueprint('teacherApi', __name__)
 
 from . import teacherList
 from . import addTeacher

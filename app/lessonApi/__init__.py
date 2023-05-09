@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-lessonPage = Blueprint('lessonPage', __name__)
+lessonPage = Blueprint('lessonApi', __name__)
 
 from . import lessonList
 from . import sign

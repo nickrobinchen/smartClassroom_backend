@@ -16,7 +16,7 @@ def courseList(user_id,role):
 	print(user_id,role)
 	courseList = []
 
-	if role == 'manager' or role == 'admin' or role == 'teacher':
+	if role == 'manager' or role == 'super' or role == 'teacher':
 		courseListDB = Course.query.all()
 		index = 0
 		print(courseListDB)

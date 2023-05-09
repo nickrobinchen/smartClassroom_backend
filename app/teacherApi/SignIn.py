@@ -7,6 +7,7 @@ import asyncio
 from app.auth import tokenUtils
 import random, threading, time
 
+
 def simulate_signin(app, id, lec_id):
     with app.app_context():
         class_id = Lecture.query.with_entities(Lecture.class_id).filter_by(id=lec_id).first()[0]
@@ -17,18 +18,19 @@ def simulate_signin(app, id, lec_id):
         print(students)
         stu_num = len(students)
 
-        index = random.sample(students, int(stu_num / 1.5))
+        index = random.sample(students, int(stu_num * 0.75))
         print(index)
         for i in index:
             if i == 2:
                 continue
-            sim_signin = SignInRecord(signin_id=id,student_id=i,signin_time=int(time.time()*1000))
+            sim_signin = SignInRecord(signin_id=id, student_id=i, signin_time=int(time.time() * 1000))
             print(sim_signin)
             db.session.add(sim_signin)
             db.session.commit()
-            time.sleep(3)
+            time.sleep(2)
             if SignIn.query.with_entities(SignIn.ended).filter_by(id=id).first()[0]:
                 break
+
 
 @teacherPage.route('/signIn/add', methods=['POST'])
 @tokenUtils.token_required
@@ -46,9 +48,10 @@ def beginSigningIn(user_id, role):
     signin = SignIn(lecture, end_time, start_time)
     db.session.add(signin)
     db.session.commit()
-    signin_id = SignIn.query.with_entities(SignIn.id).filter_by(lecture_id=lecture,start_time=start_time).first()[0]
+    signin_id = SignIn.query.with_entities(SignIn.id).filter_by(lecture_id=lecture, start_time=start_time).first()[0]
 
-    t = threading.Thread(target=simulate_signin, args=(current_app._get_current_object(),signin_id,lecture),name='sim')
+    t = threading.Thread(target=simulate_signin, args=(current_app._get_current_object(), signin_id, lecture),
+                         name='sim')
     t.start()
     print(data)
     code = 200
@@ -60,6 +63,7 @@ def beginSigningIn(user_id, role):
 
     return jsonify(json_to_send)
 
+
 @teacherPage.route('/signIn/getInfo', methods=['GET'])
 @tokenUtils.token_required
 def getSigningInfo(user_id, role):
@@ -70,7 +74,7 @@ def getSigningInfo(user_id, role):
     signin = SignIn.query.filter_by(id=id).first()
     if signin.ended:
         result = getSigningResult(id)
-    elif signin.end_time < int(time.time()*1000):
+    elif signin.end_time < int(time.time() * 1000):
         result = getSigningResult(id)
 
         # 2:进行更新操作
@@ -79,13 +83,16 @@ def getSigningInfo(user_id, role):
         db.session.commit()
     else:
         signIns = SignInRecord.query.filter_by(signin_id=id).all()
-        data = list(map(lambda r:{'name':Student.query.with_entities(Student.name).filter_by(id=r.student_id).first()[0],'id':r.student_id, 'signin_time':r.signin_time}, signIns))
-        msg="Get Info Success"
+        data = list(
+            map(lambda r: {'name': Student.query.with_entities(Student.name).filter_by(id=r.student_id).first()[0],
+                           'id': r.student_id, 'signin_time': r.signin_time}, signIns))
+        msg = "Get Info Success"
         code = 200
-        result={'ended': False, 'data': data}
+        result = {'ended': False, 'data': data}
     json_to_send = dict(code=code, message=msg, result=result)
 
     return jsonify(json_to_send)
+
 
 def getSigningResult(id):
     sign_in = SignIn.query.filter_by(id=id).first()
@@ -100,8 +107,15 @@ def getSigningResult(id):
     for s in students:
         if s.id not in signIn_ids:
             unsigned_list.append(s.name)
-    signed_students = list(map(lambda r:{'name':Student.query.with_entities(Student.name).filter_by(id=r.student_id).first()[0],'id':r.student_id, 'signin_time':r.signin_time}, signIns))
-    return {'ended':True,'data':{'total_num':stu_num, 'signed_num': signed_num,'signed_students':signed_students,'unsigned_students':unsigned_list,'start_time':sign_in.start_time,'end_time':sign_in.end_time}}
+    for s in signIns:
+        if Student.query.with_entities(Student.name).filter_by(id=s.student_id).first() is None:
+            signIns.remove(s)
+    signed_students = list(
+        map(lambda r: {'name': Student.query.with_entities(Student.name).filter_by(id=r.student_id).first()[0],
+                       'id': r.student_id, 'signin_time': r.signin_time}, signIns))
+    return {'ended': True, 'data': {'total_num': stu_num, 'signed_num': signed_num, 'signed_students': signed_students,
+                                    'unsigned_students': unsigned_list, 'start_time': sign_in.start_time,
+                                    'end_time': sign_in.end_time}}
 
 
 @teacherPage.route('/signIn/end', methods=['GET'])
@@ -123,6 +137,7 @@ def endSigningIn(user_id, role):
 
     return jsonify(json_to_send)
 
+
 @teacherPage.route('/signIn/prev', methods=['GET'])
 @tokenUtils.token_required
 def getPrevSignIns(user_id, role):
@@ -134,7 +149,7 @@ def getPrevSignIns(user_id, role):
     results = []
     for i in signIns:
         if not i.ended:
-            if i.end_time < int(time.time()*1000):
+            if i.end_time < int(time.time() * 1000):
                 # 2:进行更新操作
                 db.session.execute(db.update(SignIn).where(SignIn.id == i.id).values(ended=True))
                 # 3：提交与关闭
@@ -152,5 +167,3 @@ def getPrevSignIns(user_id, role):
     }
 
     return jsonify(json_to_send)
-
-

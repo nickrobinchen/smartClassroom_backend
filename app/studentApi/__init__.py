@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-studentPage = Blueprint('studentPage', __name__)
+studentPage = Blueprint('studentApi', __name__)
 
 from . import studentList
 from . import classInfo

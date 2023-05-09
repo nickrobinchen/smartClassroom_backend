@@ -58,7 +58,24 @@ class Teacher(db.Model):
 
     def __repr__(self):
         return '<teacher {}>'.format(self.name)
+class SuperAdmin(db.Model):
 
+    # 定义表名
+    __tablename__ = 'superadmin'
+
+    id = db.Column(db.INTEGER, primary_key=True)
+    name = db.Column(db.String(45))
+    account = db.Column(db.String(45))
+    password = db.Column(db.String(45))
+
+
+    def __init__(self, name, account, password):
+        self.name = name
+        self.account = account
+        self.password = password
+
+    def __repr__(self):
+        return '<SUPERADMIN {}>'.format(self.name)
 class Student(db.Model):
 
     # 定义表名

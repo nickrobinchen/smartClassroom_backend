@@ -1,7 +1,7 @@
 from flask import request
 from flask import jsonify
 from app import db
-from app.models import Manager, Teacher, Student
+from app.models import Manager, Teacher, Student, SuperAdmin
 from . import userPage
 
 from app.auth import tokenUtils
@@ -31,7 +31,11 @@ def login():
         role = ""
         first = account[0:1]
         user = None
-        if first == "M":
+        sa = SuperAdmin.query.filter_by(account=account).first()
+        if sa is not None:
+            user = sa
+            role = 'super'
+        elif first == "M":
             user = Manager.query.filter_by(account=account).first()
             role = "manager"
         elif first == "U":
@@ -73,7 +77,10 @@ def getUserInfo(user_id, role):
     user = None
     print((user_id, role))
     homePath = '/dashboard/workbench'
-    if role == "manager" or role == "admin":
+    if role == 'super':
+        user = SuperAdmin.query.filter_by(id=user_id).first()
+        homePath = '/supermanage/managermanage'
+    elif role == "manager" or role == "admin":
         user = Manager.query.filter_by(id=user_id).first()
         homePath = '/adminmanage/homePage'
     elif role == "student":
@@ -84,6 +91,7 @@ def getUserInfo(user_id, role):
     code = 200
     data = dict(roles=[dict(roleName=role, value=role)], userId=user_id, username=user.name, realName=user.name,
                 avatar='', homePath=homePath)
+
     json_to_send = {
         'code': code,
         'msg': msg,
