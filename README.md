@@ -1,7 +1,7 @@
 
 
 # README
-##依赖
+## 依赖
 ```
 Flask
 Flask-Script
